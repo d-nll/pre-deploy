@@ -125,27 +125,26 @@ function onScroll() {
 window.addEventListener("scroll", onScroll, { passive: true });
 onScroll();
 
-// ================= INTRO: PLANE FROM BEHIND THE NAVBAR, SOFT VAPOR TRAIL, STARRY SKY =================
-// One canvas, one loop. Stars twinkle on both sides of the sky and stream upward as the plane dives.
-// Two bright contrails peel off the wingtips, widen and drift gently, and a soft haze blooms into white.
+// ================= INTRO: PLANE FROM BEHIND THE NAVBAR (GPU / COMPOSITOR VERSION) =================
+// Why this version is smooth:
+//  - NOTHING is painted per frame. Stars and trails are drawn ONCE into static canvases.
+//  - Everything that moves (plane, stars, trails, haze, white fade) is animated with transform + opacity
+//    through the Web Animations API, so the browser's compositor (GPU) runs it off the main thread.
+//    Even if the page is still decoding images / CSS on GitHub Pages, the animation does not stutter.
+//  - Layers are created and rasterized BEFORE the animation starts (paused for two frames), so there is
+//    no first-frame hitch.
+//  - The start waits for fonts, the window load event and image decoding.
 const root = document.documentElement;
 
 if (root.classList.contains("anim")) {
-  const PLANE_PATH = new Path2D("M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z");
   const pill = document.getElementById("navbar-container");
-
-  const canvas = document.createElement("canvas");
-  canvas.className = "wave-canvas";
-  canvas.setAttribute("aria-hidden", "true");
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext("2d");
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
 
   // ---------- tuning ----------
   const DURATION = 2300;   // ms total
   const FLY = 0.7;         // the plane has left the screen at this point of the timeline (0..1)
   const PLANE = 56;        // px at the start; grows a little as it dives toward you
+  const N = 60;            // keyframes per animation (linear between them)
+  const PS = 135;          // plane element size in px (drawn at max size, only ever scaled DOWN = always crisp)
 
   // ---------- helpers ----------
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -153,234 +152,244 @@ if (root.classList.contains("anim")) {
   const ease = (t) => t * t * (2.2 - 1.2 * t);              // slow emerge from the navbar, then speeds up
   const speedOf = (t) => (4.4 * t - 3.6 * t * t) / 1.34;    // derivative of ease, 0..1
   const mulberry = (a) => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const f2 = (n) => n.toFixed(2);
 
-  // One soft glow sprite: a true gaussian falloff (many stops, large size) so there is no banding or hard rim
+  // Styles for the intro layers (injected here so only this file needs to change)
+  const style = document.createElement("style");
+  style.textContent = `
+    .intro-fx{position:fixed;inset:0;z-index:900;overflow:hidden;pointer-events:none;contain:strict}
+    .intro-fx>*{position:absolute;left:0;top:0;will-change:transform,opacity;backface-visibility:hidden}
+    html.anim:not(.ready) .scroll-plane svg{animation-play-state:paused}
+  `;
+  document.head.appendChild(style);
+
+  // One soft gaussian glow sprite, used only to draw the static star / trail canvases
   const glow = (() => {
-    const S = 256, c = document.createElement("canvas"); c.width = c.height = S;
+    const S = 128, c = document.createElement("canvas"); c.width = c.height = S;
     const g = c.getContext("2d");
     const gr = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
     for (let i = 0; i <= 16; i++) {
       const x = i / 16;
-      const a = Math.exp(-3.4 * x * x) * (1 - x * x * x * x);   // gaussian, forced to exactly 0 at the rim
-      const tint = Math.round(255 - 38 * x);                     // white core, faintly cool at the rim
+      const a = Math.exp(-3.4 * x * x) * (1 - x * x * x * x);
+      const tint = Math.round(255 - 38 * x);
       gr.addColorStop(x, `rgba(${tint},${Math.round(255 - 24 * x)},255,${a.toFixed(4)})`);
     }
     g.fillStyle = gr; g.fillRect(0, 0, S, S);
     return c;
   })();
 
-  let W = 0, H = 0, SC = 1;
-  function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    SC = clamp(W / 900, 0.72, 1.25);
-    canvas.width = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+  let overlay = null;
+
+  function finish() {
+    window.scrollTo(0, 0);
+    root.classList.add("ready");
+    requestAnimationFrame(() => { if (overlay) overlay.remove(); style.remove(); });
   }
 
-  // ---------- run ----------
   function run() {
-    resize();
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const SC = clamp(W / 900, 0.72, 1.25);
 
     const pr = pill.getBoundingClientRect();
-    const pillTop = pr.top;
-    const pillBottom = pr.bottom;
+    const y0 = pr.bottom - 30;           // plane starts hidden behind the navbar pill
+    const y1 = H + 130;                  // and ends below the screen
+    const D = y1 - y0;
+    const px = W / 2;
 
-    // The plane starts completely hidden behind the navbar pill and ends below the screen
-    const y0 = pillBottom - 30;
-    const y1 = H + 130;
-    const px = W / 2;                                  // straight line, no sway
-
-    const rnd = mulberry(11);
-
-    // ----- stars: mostly on both sides of the flight path, each with its own depth and twinkle -----
-    const stars = [];
-    const starCount = clamp(Math.round(W * H / 8000), 70, 190);
-    for (let i = 0; i < starCount; i++) {
-      const sideStar = rnd() < 0.82;
-      const x = sideStar ? (rnd() < 0.5 ? rnd() * W * 0.38 : W - rnd() * W * 0.38) : rnd() * W;
-      const z = rnd();                                 // 0 far .. 1 near
-      stars.push({
-        x, y: rnd() * H, z,
-        r: (0.5 + z * 1.2) * Math.min(SC, 1.1),
-        a: 0.35 + z * 0.55,
-        tw: 1.2 + rnd() * 2.4, ph: rnd() * 6.28
-      });
-    }
-    let starSpeed = 0;                                 // smoothed, so the stars ease into and out of motion
-
-    // ----- trail particles, oldest first -----
-    const parts = [];
-    let lastY = y0, lastHazeY = y0;
-    let clock = 0, lastClock = 0;
-
-    // Contrail particle: thin and bright when young, widening and fading as it ages, drifting a little
-    const addTrail = (x, y, wing) => {
-      if (parts.length > 2600) return;
-      parts.push({
-        kind: "trail", born: clock, x, y,
-        r0: (wing ? 2.8 : 4.8) * SC,
-        r1: (wing ? 34 : 46) * SC * (0.85 + rnd() * 0.3),
-        life: wing ? 1.05 : 1.2,
-        a: wing ? 0.85 : 0.55,
-        amp: (6 + rnd() * 12) * SC, ph: rnd() * 6.28
-      });
-    };
-
-    // Haze particle: very large and very soft, blooms outward and stays, so the trail melts into white
-    const addHaze = (x, y) => {
-      parts.push({
-        kind: "haze", born: clock, x: x + (rnd() - .5) * 40 * SC, y,
-        r0: 40 * SC,
-        r1: Math.max(W * (0.34 + rnd() * 0.16), 260),
-        a: 0.2
-      });
-    };
-
-    let t0 = 0;
-
-    function frame(now) {
-      if (!t0) t0 = now;
-      const t = clamp((now - t0) / DURATION, 0, 1);
-      clock = t * DURATION / 1000;
-      const dt = Math.min(clock - lastClock, 0.05);
-      lastClock = clock;
-
+    // ---------- pre-compute the whole timeline once ----------
+    const S = [];
+    let sSpeed = 0, dFar = 0, dNear = 0;
+    const dtS = DURATION / 1000 / N;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N;
       const tp = clamp(t / FLY, 0, 1);
       const e = ease(tp);
       const v = tp >= 1 ? 0 : clamp(speedOf(tp), 0, 1);
-      const py = y0 + (y1 - y0) * e;
+      sSpeed += ((14 + 900 * v) - sSpeed) * (1 - Math.exp(-dtS * 7));
+      if (i > 0) { dFar += sSpeed * 0.44 * dtS; dNear += sSpeed * 0.81 * dtS; }
       const s = 1 + 0.7 * e;
-      const k = PLANE * s / 24;
+      S.push({
+        t, e, s,
+        py: y0 + D * e,
+        k: PLANE * s / 24,
+        far: dFar, near: dNear,
+        starFade: smooth(0, 0.12, t) * (1 - smooth(0.55, 0.9, t))
+      });
+    }
+    // how far the star layers travel while still visible
+    let farMax = 0, nearMax = 0;
+    for (const p of S) if (p.t <= 0.92) { farMax = p.far; nearMax = p.near; }
 
-      // Emit along the path by distance (not by time), so the trail is continuous at any speed or frame rate
-      while (tp < 1 && lastY + 3 <= py) {
-        lastY += 3;
-        const wy = lastY - 2.5 * k;                    // wingtips sit a little behind the plane's centre
-        if (wy > pillTop + 8) {
-          addTrail(px - 9.5 * k, wy, true);
-          addTrail(px + 9.5 * k, wy, true);
-          addTrail(px, lastY - 10 * k, false);
+    // ---------- DOM ----------
+    overlay = document.createElement("div");
+    overlay.className = "intro-fx";
+    overlay.setAttribute("aria-hidden", "true");
+
+    const anims = [];
+    const animate = (el, frames) => {
+      const a = el.animate(frames, { duration: DURATION, easing: "linear", fill: "both" });
+      a.pause();                                   // hold the first frame until everything is rasterized
+      anims.push(a);
+      return a;
+    };
+    const mkCanvas = (w, h) => {
+      const c = document.createElement("canvas");
+      c.width = Math.max(1, Math.ceil(w));
+      c.height = Math.max(1, Math.ceil(h));
+      c.style.width = c.width + "px";
+      c.style.height = c.height + "px";
+      return c;
+    };
+    const tr = (x, y) => `translate3d(${f2(x)}px,${f2(y)}px,0)`;
+    const op = (v) => Math.max(0.01, v);          // never 0, so the layer is rasterized up front
+
+    // ----- stars: two static canvases (far / near) that slide up at different speeds -----
+    const baseStars = clamp(Math.round(W * H / 11000), 50, 130);
+    const rnd = mulberry(11);
+    function starLayer(h, zLo, zHi, seed) {
+      const c = mkCanvas(W, h);
+      const g = c.getContext("2d");
+      const r2 = mulberry(seed);
+      const count = Math.round(baseStars * (h / H) * 0.5);
+      for (let i = 0; i < count; i++) {
+        const sideStar = r2() < 0.82;
+        const x = sideStar ? (r2() < 0.5 ? r2() * W * 0.38 : W - r2() * W * 0.38) : r2() * W;
+        const y = r2() * h;
+        const z = zLo + r2() * (zHi - zLo);
+        const r = (0.5 + z * 1.2) * Math.min(SC, 1.1);
+        const a = (0.35 + z * 0.55) * (0.65 + 0.35 * r2());
+        if (z > 0.45) {
+          g.globalAlpha = a * 0.3;
+          g.drawImage(glow, x - r * 4, y - r * 4, r * 8, r * 8);
         }
+        g.globalAlpha = a;
+        g.fillStyle = "#fff";
+        g.beginPath(); g.arc(x, y, r, 0, 6.2832); g.fill();
       }
-      while (tp < 1 && lastHazeY + 34 <= py) {
-        lastHazeY += 34;
-        if (lastHazeY > pillTop + 8) addHaze(px, lastHazeY - 10 * k);
-      }
+      return c;
+    }
+    const starFar = starLayer(H + Math.ceil(farMax) + 30, 0, 0.5, 101);
+    const starNear = starLayer(H + Math.ceil(nearMax) + 30, 0.5, 1, 202);
+    overlay.appendChild(starFar);
+    overlay.appendChild(starNear);
+    animate(starFar, S.map(p => ({ offset: p.t, transform: tr(0, -p.far), opacity: op(p.starFade) })));
+    animate(starNear, S.map(p => ({ offset: p.t, transform: tr(0, -p.near), opacity: op(p.starFade) })));
 
-      ctx.clearRect(0, 0, W, H);
+    // ----- big soft bloom that melts the screen into white (drawn tiny, scaled up by the GPU) -----
+    const bw = Math.ceil(W * 1.8 / 4), bh = Math.ceil(H * 1.8 / 4);
+    const bloom = document.createElement("div");
+    bloom.style.cssText = `width:${bw}px;height:${bh}px;background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(255,255,255,.6) 45%,rgba(255,255,255,0))`;
+    overlay.appendChild(bloom);
+    animate(bloom, S.map(p => ({
+      offset: p.t,
+      transform: `${tr(px - bw / 2, H * 0.5 - bh / 2)} scale(${f2(4 * (0.3 + 0.7 * smooth(0.2, 0.9, p.t)))})`,
+      opacity: op(smooth(0.22, 0.9, p.t))
+    })));
 
-      // ----- stars (drawn first, so the haze washes over them) -----
-      starSpeed += ((14 + 900 * v) - starSpeed) * (1 - Math.exp(-dt * 7));
-      const starFade = smooth(0, 0.12, t) * (1 - smooth(0.55, 0.9, t));
-      if (starFade > 0.004) {
-        ctx.lineCap = "round";
-        for (const st of stars) {
-          const sp = starSpeed * (0.25 + st.z * 0.75);
-          st.y -= sp * dt;
-          if (st.y < -12) st.y += H + 24;
-          const tw = 0.65 + 0.35 * Math.sin(clock * st.tw + st.ph);
-          const al = st.a * tw * starFade;
-          const len = sp * 0.026;
-          if (len > 2) {                               // a faint streak when moving fast
-            ctx.strokeStyle = `rgba(255,255,255,${(al * 0.55).toFixed(3)})`;
-            ctx.lineWidth = st.r * 1.3;
-            ctx.beginPath(); ctx.moveTo(st.x, st.y); ctx.lineTo(st.x, st.y + len); ctx.stroke();
-          }
-          ctx.globalAlpha = al * 0.3;                  // soft halo
-          ctx.drawImage(glow, st.x - st.r * 4, st.y - st.r * 4, st.r * 8, st.r * 8);
-          ctx.globalAlpha = al;                        // bright core
-          ctx.fillStyle = "#fff";
-          ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-      }
+    // ----- haze that rides along with the plane -----
+    const hz = Math.ceil(Math.max(W * 0.9, 300) / 4);
+    const haze = document.createElement("div");
+    haze.style.cssText = `width:${hz}px;height:${hz}px;background:radial-gradient(closest-side,rgba(255,255,255,.7),rgba(255,255,255,.3) 50%,rgba(255,255,255,0))`;
+    overlay.appendChild(haze);
+    animate(haze, S.map(p => ({
+      offset: p.t,
+      transform: `${tr(px - hz / 2, p.py - 10 * p.k - hz / 2)} scale(${f2(4 * (0.4 + 0.6 * p.e))})`,
+      opacity: op(0.8 * smooth(0, 0.25, p.e))
+    })));
 
-      // ----- trail + haze -----
-      for (let i = parts.length - 1; i >= 0; i--) {
-        const p = parts[i];
-        if (p.kind === "trail" && clock - p.born >= p.life) parts.splice(i, 1);
-      }
-
-      for (const p of parts) {
-        const age = clock - p.born;
-        if (p.kind === "trail") {
-          const u = clamp(age / p.life, 0, 1);
-          const grow = 1 - Math.pow(1 - u, 2.2);
-          const r = p.r0 + (p.r1 - p.r0) * grow;
-          const x = p.x + Math.sin(age * 2.4 + p.ph) * p.amp * smooth(0, 1, u);   // slow, soft waft
-          ctx.globalAlpha = smooth(0, 0.06, age) * Math.pow(1 - smooth(0, 1, u), 1.15) * p.a;
-          ctx.drawImage(glow, x - r, p.y - r, r * 2, r * 2);
-        } else {
-          const g = clamp(age / 0.75, 0, 1);
-          const r = p.r0 + (p.r1 - p.r0) * (1 - Math.pow(1 - g, 3));
-          ctx.globalAlpha = p.a * smooth(0, 0.25, age);
-          ctx.drawImage(glow, p.x - r, p.y - r, r * 2, r * 2);
-        }
-      }
-
-      // Make sure the screen ends perfectly white, so the handoff to the white card has no seam
-      const full = smooth(0.84, 0.99, t);
-      if (full > 0) { ctx.globalAlpha = full; ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H); }
-      ctx.globalAlpha = 1;
-
-      // ----- the aircraft: white, nose down, perfectly straight; clipped at the navbar so it comes out from behind the pill -----
-      if (tp < 1) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, pillTop + 2, W, H);
-        ctx.clip();
-
-        // soft halo behind the tail
-        ctx.globalAlpha = 0.5;
-        ctx.drawImage(glow, px - 38 * k, py - 30 * k, 76 * k, 76 * k);
-        ctx.globalAlpha = 1;
-
-        ctx.translate(px, py);
-        ctx.rotate(Math.PI);
-        ctx.scale(k, k);
-        ctx.translate(-12, -12);
-        ctx.lineJoin = "round";
-        ctx.miterLimit = 2;
-
-        // soft shadow + thin outline
-        ctx.lineWidth = 2.6 / k;
-        ctx.strokeStyle = "rgba(26,26,26,.92)";
-        ctx.shadowColor = "rgba(0,0,0,.3)";
-        ctx.shadowBlur = 18;
-        ctx.shadowOffsetY = 6;
-        ctx.stroke(PLANE_PATH);
-        ctx.shadowColor = "transparent";
-
-        // body: bright at the nose, a touch cooler toward the tail
-        const body = ctx.createLinearGradient(0, 2, 0, 22);
-        body.addColorStop(0, "#ffffff");
-        body.addColorStop(1, "#e7ecf6");
-        ctx.fillStyle = body;
-        ctx.fill(PLANE_PATH);
-        ctx.restore();
-      }
-
-      if (t < 1) {
-        requestAnimationFrame(frame);
-      } else {
-        // Solid white now: turn the card white and rise the content, then drop the canvas
-        window.scrollTo(0, 0);
-        root.classList.add("ready");
-        requestAnimationFrame(() => canvas.remove());
+    // ----- contrails: pre-drawn ONCE at full length, then revealed with a cheap scaleY from the top -----
+    function drawTrail(c, wing, seed) {
+      const g = c.getContext("2d");
+      const r2 = mulberry(seed);
+      const cx = c.width / 2;
+      const r0 = (wing ? 2.8 : 4.8) * SC;
+      const r1 = (wing ? 34 : 46) * SC;
+      const life = wing ? 1.05 : 1.2;
+      const amax = wing ? 0.85 : 0.55;
+      for (let y = 0; y <= D; y += 3) {
+        const u = 1 - y / D;                                   // 0 at the plane end, 1 at the old end
+        const age = u * life;
+        const grow = 1 - Math.pow(1 - u, 2.2);
+        const r = r0 + (r1 * (0.85 + r2() * 0.3) - r0) * grow;
+        const x = cx + Math.sin(age * 2.4 + r2() * 6.28) * (6 + r2() * 12) * SC * smooth(0, 1, u);
+        const a = smooth(0, 0.05, u) * Math.pow(1 - smooth(0, 1, u), 1.15) * amax;
+        if (a < 0.004) continue;
+        g.globalAlpha = a;
+        g.drawImage(glow, x - r, y - r, r * 2, r * 2);
       }
     }
+    const wingW = Math.ceil(130 * SC), midW = Math.ceil(160 * SC);
+    const trailMid = mkCanvas(midW, D);
+    const trailL = mkCanvas(wingW, D);
+    const trailR = mkCanvas(wingW, D);
+    drawTrail(trailMid, false, 7);
+    drawTrail(trailL, true, 8);
+    drawTrail(trailR, true, 9);
+    [trailMid, trailL, trailR].forEach(c => { c.style.transformOrigin = "0 0"; overlay.appendChild(c); });
+    const grow = (p) => `scale(1,${f2(Math.max(p.e, 0.001))})`;
+    animate(trailMid, S.map(p => ({ offset: p.t, transform: `${tr(px - midW / 2, y0)} ${grow(p)}`, opacity: 1 })));
+    animate(trailL, S.map(p => ({ offset: p.t, transform: `${tr(px - 9.5 * p.k - wingW / 2, y0)} ${grow(p)}`, opacity: 1 })));
+    animate(trailR, S.map(p => ({ offset: p.t, transform: `${tr(px + 9.5 * p.k - wingW / 2, y0)} ${grow(p)}`, opacity: 1 })));
 
-    requestAnimationFrame(frame);
+    // ----- the aircraft: nose down, white with a dark outline; sits behind the navbar pill (z-index) so it emerges from it -----
+    const plane = document.createElement("div");
+    plane.style.cssText = `width:${PS}px;height:${PS}px`;
+    plane.innerHTML =
+      `<div style="position:absolute;left:50%;top:50%;width:302px;height:302px;margin:-151px 0 0 -151px;transform:translateY(32px);opacity:.5;background:radial-gradient(closest-side,rgba(255,255,255,1),rgba(255,255,255,.55) 25%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.05) 75%,rgba(255,255,255,0))"></div>` +
+      `<svg viewBox="-5 -5 34 34" width="${PS}" height="${PS}" style="position:absolute;left:0;top:0;overflow:visible;transform:rotate(180deg)">` +
+      `<defs><linearGradient id="introPlaneGrad" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="22"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e7ecf6"/></linearGradient></defs>` +
+      `<path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="url(#introPlaneGrad)" stroke="rgba(26,26,26,.92)" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke fill"/>` +
+      `</svg>`;
+    overlay.appendChild(plane);
+    animate(plane, S.map(p => ({
+      offset: p.t,
+      transform: `${tr(px - PS / 2, p.py - PS / 2)} scale(${f2(p.s / 1.7)})`,
+      opacity: 1
+    })));
+
+    // ----- final solid white, so the handoff to the white card has no seam -----
+    const white = document.createElement("div");
+    white.style.cssText = `width:${W}px;height:${H}px;background:#fff`;
+    overlay.appendChild(white);
+    animate(white, S.map(p => ({ offset: p.t, transform: "translate3d(0,0,0)", opacity: op(smooth(0.84, 0.99, p.t)) })));
+
+    document.documentElement.appendChild(overlay);   // child of <html>: unaffected by the body fade-in
+
+    // Two frames so every layer is rasterized and uploaded to the GPU, then all animations start together
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      anims.forEach(a => a.play());
+      Promise.all(anims.map(a => a.finished)).then(finish, finish);
+    }));
   }
 
-  // Wait for fonts so the first frames are smooth, then a short beat before the plane leaves the navbar
-  const go = () => setTimeout(run, 200);
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
+  // Safety net: never leave the page hidden if something goes wrong
+  const failSafe = setTimeout(() => { if (overlay) overlay.remove(); root.classList.add("ready"); }, 9000);
+
+  function start() {
+    clearTimeout(failSafe);
+    try {
+      if (!Element.prototype.animate) throw new Error("Web Animations not supported");
+      run();
+    } catch (err) {
+      console.error(err);
+      if (overlay) overlay.remove();
+      root.classList.add("ready");
+    }
+  }
+
+  // Wait until the page has really finished loading (CDN CSS, fonts, images decoded)
+  // so the browser isn't busy while the plane is flying.
+  const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  const pageLoaded = document.readyState === "complete"
+    ? Promise.resolve()
+    : new Promise(res => window.addEventListener("load", res, { once: true }));
+  const decoded = pageLoaded.then(() => Promise.all(
+    Array.from(document.images).map(img => (img.decode ? img.decode().catch(() => {}) : null))
+  ));
+  const timeout = new Promise(res => setTimeout(res, 3000));   // don't wait forever on slow networks
+
+  Promise.race([Promise.all([fontsReady, decoded]), timeout]).then(() => setTimeout(start, 120));
 }
 
 // ================= PAGE TRANSITION =================
