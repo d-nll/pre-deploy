@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a1a">
+  <title>Web Development</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="developer.css">
+  <!-- JS -->
+  <script src="dev.js" defer></script>
+
+</head>
+<body>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="scroll-plane" id="scroll-plane" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false"><path transform="rotate(90 12 12)" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top expand-animation" id="navbar">
+    <div class="container rounded-pill px-4" id="navbar-container">
+      <!-- Logo -->
+      <a class="navbar-brand mx-3 expand-animation" href="index.html">
+        <img src="Danlogo.png" alt="Logo">
+      </a>
+
+      <!-- Burger Menu -->
+      <button class="burger-menu" id="burger-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Nav Links -->
+      <ul class="navbar-nav mx-auto" id="navbar-links">
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="index.html" data-section="home">Home</a></li>
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="about.html" data-section="about">About Me</a></li>
+
+        <!-- Projects Dropdown -->
+        <li class="nav-item dropdown animate-fade-in-delay">
+          <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" data-section="project">Projects</a>
+          <ul class="dropdown-menu" aria-labelledby="projectDropdown">
+            <li><a class="dropdown-item" href="developer.html">Web Development</a></li>
+            <li><a class="dropdown-item" href="aero.html">Aviation Engineering</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="contact.html" data-section="contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-grid">
+        <a href="index.html" class="mobile-menu-item" data-section="home">Home</a>
+        <a href="about.html" class="mobile-menu-item" data-section="about">About Me</a>
+        <button type="button" class="mobile-menu-item mobile-menu-toggle" data-section="project" aria-expanded="false" aria-controls="mobile-submenu">Project <i class="bi bi-chevron-down"></i></button>
+        <div class="mobile-submenu" id="mobile-submenu">
+          <div class="mobile-submenu-inner">
+            <a href="developer.html">Web Development</a>
+            <a href="aero.html">Aviation Engineering</a>
+          
+          </div>
+        </div>
+        <a href="contact.html" class="mobile-menu-item" data-section="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+
+
+
+  <!-- UNDER-DEVELOPMENT PAGE -->
+  <main class="dev-page">
+
+    <!-- Animated Background -->
+    <div class="dev-sky" aria-hidden="true">
+
+      <div class="dev-stars"></div>
+
+      <span class="dev-cloud dev-cloud-one"></span>
+      <span class="dev-cloud dev-cloud-two"></span>
+      <span class="dev-cloud dev-cloud-three"></span>
+
+    </div>
+
+    <!-- Looping Airplane Animation -->
+    <div class="dev-flight-lane" aria-hidden="true">
+
+      <span class="dev-flight-trail"></span>
+
+      <span class="dev-flight-plane">
+        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+          <path
+            d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+          />
+        </svg>
+      </span>
+
+    </div>
+
+    <!-- Main Message -->
+    <section class="dev-content" aria-labelledby="dev-title">
+
+      <span class="dev-chip">
+        <span class="dev-status-dot"></span>
+        Web Development
+      </span>
+
+      <p class="dev-eyebrow">
+        A little work in progress
+      </p>
+
+      <h1 class="dev-title" id="dev-title">
+        pede wait,<br>
+        <span>Page Under development pa</span>
+
+        <span class="dev-loading-dots" aria-label="Loading">
+          <i></i>
+          <i></i>
+          <i></i>
+        </span>
+      </h1>
+
+      <p class="dev-description">
+        I’m building something new behind the scenes.
+        This page will be ready to take off soon.
+      </p>
+
+      <!-- Animated Progress Indicator -->
+      <div
+        class="dev-progress"
+        role="status"
+        aria-label="Page under development"
+      >
+        <span></span>
+      </div>
+
+      <p class="dev-small-note">
+        <i class="bi bi-airplane-engines" aria-hidden="true"></i>
+        Preparing for takeoff
+      </p>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="connect-footer dev-footer">
+
+      <span>&copy; 2026 Denielle Ubana</span>
+
+      <a href="index.html" class="to-top">
+        Back to top
+        <i class="bi bi-arrow-up" aria-hidden="true"></i>
+      </a>
+
+    </footer>
+
+  </main>
+
+  <!-- Bootstrap JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

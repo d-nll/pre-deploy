@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a1a">
+  <title>Contact | Denielle Ubana</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="contact.css">
+  <script>
+    /* Hide the content right away so there is no flash before the animation */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim");
+  </script>
+  <!-- JS -->
+  <script src="contact.js" defer></script>
+</head>
+<body>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="scroll-plane" id="scroll-plane" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false"><path transform="rotate(90 12 12)" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top expand-animation" id="navbar">
+    <div class="container rounded-pill px-4" id="navbar-container">
+      <!-- Logo -->
+      <a class="navbar-brand mx-3 expand-animation" href="index.html">
+        <img src="Danlogo.png" alt="Logo">
+      </a>
+
+      <!-- Burger Menu -->
+      <button class="burger-menu" id="burger-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Nav Links -->
+      <ul class="navbar-nav mx-auto" id="navbar-links">
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="index.html" data-section="home">Home</a></li>
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="about.html" data-section="about">About Me</a></li>
+
+        <!-- Projects Dropdown -->
+        <li class="nav-item dropdown animate-fade-in-delay">
+          <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" data-section="project">Projects</a>
+          <ul class="dropdown-menu" aria-labelledby="projectDropdown">
+            <li><a class="dropdown-item" href="developer.html">Web Development</a></li>
+            <li><a class="dropdown-item" href="aero.html">Aviation Engineering</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay active" href="contact.html" data-section="contact" aria-current="page">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-grid">
+        <a href="index.html" class="mobile-menu-item" data-section="home">Home</a>
+        <a href="about.html" class="mobile-menu-item" data-section="about">About Me</a>
+        <button type="button" class="mobile-menu-item mobile-menu-toggle" data-section="project" aria-expanded="false" aria-controls="mobile-submenu">Project <i class="bi bi-chevron-down"></i></button>
+        <div class="mobile-submenu" id="mobile-submenu">
+          <div class="mobile-submenu-inner">
+            <a href="developer.html">Web Development</a>
+            <a href="aero.html">Aviation Engineering</a>
+          
+          </div>
+        </div>
+        <a href="contact.html" class="mobile-menu-item active" data-section="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTACT -->
+  <main class="contact" id="contact">
+    <div class="page">
+      <header class="head">
+        <span class="eyebrow rv" style="--d:0s">Contact</span>
+        <h1 class="title rv" style="--d:.06s">Connect with Me</h1>
+        <p class="lead rv" style="--d:.12s">"What if I call?" Go. (p.s wag lang pag tulog ako)</p>
+      </header>
+
+      <div class="grid">
+        <section class="profile rv" style="--d:.18s">
+          <img src="Formal.png" alt="Profile Picture" class="profile-img">
+          <h2 class="name">Denielle Ubana</h2>
+          <span class="role">Aviation Electronics</span>
+          <div class="tags">
+            <span>Aviation Student</span>
+            <span>Developer</span>
+            <span>Multimedia Artist</span>
+          </div>
+        </section>
+
+        <div class="info">
+          <div class="cards">
+            <a href="tel:+639998047015" class="c-card rv" style="--d:.24s">
+              <span class="c-icon"><i class="bi bi-telephone"></i></span>
+              <span class="c-text"><small>Phone</small><strong>+63 999 804 7015</strong></span>
+              <i class="bi bi-arrow-up-right c-go"></i>
+            </a>
+            <a href="mailto:dbubana092@student.mcu.edu.ph" class="c-card rv" style="--d:.3s">
+              <span class="c-icon"><i class="bi bi-envelope"></i></span>
+              <span class="c-text"><small>Email</small><strong>dbubana092@student.mcu.edu.ph</strong></span>
+              <i class="bi bi-arrow-up-right c-go"></i>
+            </a>
+            <div class="c-card static rv" style="--d:.36s">
+              <span class="c-icon"><i class="bi bi-mortarboard"></i></span>
+              <span class="c-text"><small>Studying</small><strong>BS Aviation Electronics Technology</strong><em>WCC Aeronautical &amp; Technological College - North Manila</em></span>
+            </div>
+          </div>
+
+          <div class="socials">
+            <a href="#" class="social rv" style="--d:.42s" aria-label="GitHub"><i class="bi bi-github"></i><span>GitHub</span></a>
+            <a href="https://www.instagram.com/denielle.ubana?mdxt=aTBobWRvdmZyNDMw&utm_source=qr" class="social rv" style="--d:.48s" aria-label="Instagram"><i class="bi bi-instagram"></i><span>Instagram</span></a>
+            <a href="https://www.linkedin.com/in/denielle-ubana-6163173a7?utm_source=share_via&utm_content=profile&utm_medium=member_ios" class="social rv" style="--d:.54s" aria-label="LinkedIn"><i class="bi bi-linkedin"></i><span>LinkedIn</span></a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="foot rv" style="--d:.6s">&copy; 2026 Denielle Ubana</footer>
+    </div>
+  </main>
+
+</body>
+</html>

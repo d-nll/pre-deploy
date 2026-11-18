@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a1a">
+  <title>Denielle Ubana | About Me</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="about.css">
+  <!-- JS -->
+  <script src="about.js" defer></script>
+</head>
+<body>
+
+ 
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="scroll-plane" id="scroll-plane" aria-hidden="true">
+    <svg viewBox="0 0 24 24" focusable="false"><path transform="rotate(90 12 12)" d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top expand-animation" id="navbar">
+    <div class="container rounded-pill px-4" id="navbar-container">
+      <!-- Logo -->
+      <a class="navbar-brand mx-3 expand-animation" href="index.html">
+        <img src="Danlogo.png" alt="Logo">
+      </a>
+
+      <!-- Burger Menu -->
+      <button class="burger-menu" id="burger-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Nav Links -->
+      <ul class="navbar-nav mx-auto" id="navbar-links">
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="index.html" data-section="home">Home</a></li>
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="about.html" data-section="about">About Me</a></li>
+
+        <!-- Projects Dropdown -->
+        <li class="nav-item dropdown animate-fade-in-delay">
+          <a class="nav-link dropdown-toggle" href="#" id="projectDropdown" data-section="project">Projects</a>
+          <ul class="dropdown-menu" aria-labelledby="projectDropdown">
+            <li><a class="dropdown-item" href="developer.html">Web Development</a></li>
+            <li><a class="dropdown-item" href="aero.html">Aviation Engineering</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link animate-fade-in-delay" href="contact.html" data-section="contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-grid">
+        <a href="index.html" class="mobile-menu-item" data-section="home">Home</a>
+        <a href="about.html" class="mobile-menu-item" data-section="about">About Me</a>
+        <button type="button" class="mobile-menu-item mobile-menu-toggle" data-section="project" aria-expanded="false" aria-controls="mobile-submenu">Project <i class="bi bi-chevron-down"></i></button>
+        <div class="mobile-submenu" id="mobile-submenu">
+          <div class="mobile-submenu-inner">
+            <a href="developer.html">Web Development</a>
+            <a href="aero.html">Aviation Engineering</a>
+          
+          </div>
+        </div>
+        <a href="contact.html" class="mobile-menu-item" data-section="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+  <!-- SUSTAIN -->
+
+
+
+
+  
+
+  <!-- Intro Section -->
+  <header class="about-hero" id="intro">
+    <div class="wrap hero-grid">
+
+      <!-- Picture -->
+      <div class="hero-photo reveal">
+        <span class="photo-glow" aria-hidden="true"></span>
+        <img src="Aboutme.png" alt="Denielle Ubana" class="about-photo">
+        <span class="photo-badge"><i class="bi bi-airplane"></i> Aviation Electronics</span>
+      </div>
+
+      <!-- Short Bio -->
+      <div class="hero-text">
+
+       &nbsp;    
+       &nbsp;
+
+
+        <h1 class="reveal">Hi, I'm <span>Denielle B. Ubana</span></h1>
+        <p class="lead-bio reveal">
+          A Bachelor of Science in Aviation Electronics Technology student at WCC Aeronautical &amp; Technological College - North Manila. I work across web development, cinematography, video editing and multimedia, combining creativity with technical skills to produce impactful work.
+        </p>
+        <p class="reveal">
+          As a former Information Technology student, I have a solid foundation in both technology and creativity.
+        </p>
+
+        <ul class="chips reveal">
+          <li>Aviation Student</li>
+          <li>Developer</li>
+          <li>Multimedia Artist</li>
+        </ul>
+
+        <div class="hero-actions reveal">
+          <a href="contact.html" class="btn-pill solid">Contact Me <i class="bi bi-arrow-up-right"></i></a>
+          <a href="#" class="btn-pill ghost">View Resume</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jump links -->
+    <nav class="wrap jump reveal" aria-label="On this page">
+      <a href="#education">Education</a>
+      <a href="#experience">Experience</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#skills">Skills</a>
+      <a href="#travels">Travels</a>
+    </nav>
+  </header>
+
+  <!-- Education Section -->
+  <section class="section" id="education">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-index">01</span>
+        <h2>Education</h2>
+        <p class="section-note">Where I am now, and the skies that got me here.</p>
+      </div>
+
+      <ol class="timeline">
+        <!-- Current -->
+        <li class="tl-item is-current">
+          <span class="tl-date">2025 – Present</span>
+          <span class="tl-dot" aria-hidden="true"></span>
+          <article class="tl-card card-dark reveal">
+            <span class="tl-tag"><i class="bi bi-mortarboard"></i> Currently studying</span>
+            <h3>Bachelor of Science in Aviation Electronics Technology</h3>
+            <p class="tl-org">WCC Aeronautical &amp; Technological College - North Manila</p>
+            <p>Studying aircraft cockpit and aircraft electronics, with hands-on work in Arduino builds, CAD designs and technical plates.</p>
+          </article>
+        </li>
+
+        <!-- Previous -->
+        <li class="tl-item">
+          <span class="tl-date">2024 – 2025</span>
+          <span class="tl-dot" aria-hidden="true"></span>
+          <article class="tl-card card-dark reveal">
+            <span class="tl-tag">Previous</span>
+            <h3>Bachelor of Science in Information Technology</h3>
+            <p class="tl-org">Manila Central University</p>
+            <p>Built the foundation in programming and web development before moving into aviation.</p>
+          </article>
+        </li>
+
+        <!-- Senior High -->
+        <li class="tl-item">
+          <span class="tl-date">2022 – 2024</span>
+          <span class="tl-dot" aria-hidden="true"></span>
+          <article class="tl-card card-dark reveal">
+            <span class="tl-tag">Senior High School</span>
+            <h3>Science, Technology, Engineering and Mathematics (STEM)</h3>
+            <p class="tl-org">Dr. Carlos S. Lanting College</p>
+            <p>Served as an Electoral Board member of the Student Council and as a public materials artist.</p>
+          </article>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section class="section" id="experience">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-index">02</span>
+        <h2>Experiences</h2>
+        <p class="section-note">Roles where I led, designed and got things done.</p>
+      </div>
+
+      <div class="exp-grid" data-stagger>
+
+         <article class="exp-card card-dark reveal">
+          <span class="exp-icon"><i class="bi bi-airplane"></i></span>
+          <span class="exp-date">2026</span>
+          <h3>Airbus A320 Hangar Tour & General Familiarization</h3>
+          <p class="exp-org">Dornier Academy, Clark Pampanga</p>
+          <ul>
+            <li>Bullet</li>
+            <li>Bullet</li>
+          </ul>
+        </article>
+
+
+        <article class="exp-card card-dark reveal">
+          <span class="exp-icon"><i class="bi bi-code-slash"></i></span>
+          <span class="exp-date">2024</span>
+          <h3>Huawei ICT Competition 2023 - 2024 Global Final</h3>
+          <p class="exp-org">Seda Hotel, Bonifactio Global City, Taguig</p>
+          <ul>
+            <li>Designed</li>
+            <li>Turned </li>
+          </ul>
+        </article>
+
+        <article class="exp-card card-dark reveal">
+          <span class="exp-icon"><i class="bi bi-people"></i></span>
+          <span class="exp-date">2022 – 2024</span>
+          <h3>Electoral Board Member- Senior High School Student Council</h3>
+          <p class="exp-org">Dr. Carlos S. Lanting College</p>
+          <ul>
+            <li>Helped run fair and organized student elections.</li>
+            <li>Worked with the council to keep the process on schedule.</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications Section -->
+  <section class="section" id="certifications">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-index">03</span>
+        <h2>Certifications</h2>
+        <p class="section-note">The certifications that I earned</p>
+      </div>
+
+      <!-- Sub topics -->
+      <div class="cert-tabs reveal" role="group" aria-label="Certification topics">
+        <button type="button" class="cert-tab active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="cert-tab" data-filter="aviation" aria-pressed="false"><i class="bi bi-airplane"></i> Aviation</button>
+        <button type="button" class="cert-tab" data-filter="it" aria-pressed="false"><i class="bi bi-cpu"></i> IT</button>
+        <button type="button" class="cert-tab" data-filter="non-acad" aria-pressed="false"><i class="bi bi-patch-check"></i> Non-Academic</button>
+      </div>
+
+      <ul class="cert-grid" data-stagger>
+        <!-- Aviation -->
+
+         <li class="cert-card card-dark reveal" data-cat="aviation">
+          <span class="cert-icon"><i class="bi bi-airplane"></i></span>
+          <span class="cert-cat">Aviation</span>
+          <h3>Beyond the Workbench: Navigating Advanced Technology-Driven Career Pathways in Modern Aviation</h3>
+          <p class="cert-org">One Aviation Today</p>
+          <span class="cert-year">December 5-6, 2026</span>
+        </li>
+
+        <li class="cert-card card-dark reveal" data-cat="aviation">
+          <span class="cert-icon"><i class="bi bi-airplane"></i></span>
+          <span class="cert-cat">Aviation</span>
+          <h3>Navigating the Core: Integrating Systems Precision and Regulatory in Modern Avionics</h3>
+          <p class="cert-org">One Aviation Today</p>
+          <span class="cert-year">May 9-10, 2026</span>
+        </li>
+
+        <li class="cert-card card-dark reveal" data-cat="aviation">
+          <span class="cert-icon"><i class="bi bi-airplane"></i></span>
+          <span class="cert-cat">Aviation</span>
+          <h3>Smart Skies: The Convergence of AI, Electronics, and Maintenance</h3>
+          <p class="cert-org">One Aviation Today</p>
+          <span class="cert-year">November 22-23, 2025</span>
+        </li>
+
+
+        <!-- IT -->
+        <li class="cert-card card-dark reveal" data-cat="it">
+          <span class="cert-icon"><i class="bi bi-cpu"></i></span>
+          <span class="cert-cat">IT</span>
+          <h3>Order of Minerva Award  - 1st Year IT Valedictorian (A.Y 2024 - 2025)</h3>
+          <p class="cert-org">Manila Central University</p>
+          <span class="cert-year">June 18, 2025</span>
+        </li>
+
+        <li class="cert-card card-dark reveal" data-cat="it">
+          <span class="cert-icon"><i class="bi bi-cpu"></i></span>
+          <span class="cert-cat">IT</span>
+          <h3>Dean’s Lister (2nd Semester A.Y 2024 - 2025)</h3>
+          <p class="cert-org"> Manila Central University</p>
+          <span class="cert-year">June 18, 2025</span>
+        </li> 
+
+           <li class="cert-card card-dark reveal" data-cat="it">
+          <span class="cert-icon"><i class="bi bi-cpu"></i></span>
+          <span class="cert-cat">IT</span>
+          <h3>Dean’s Lister (1st Semester A.Y 2024 - 2025)</h3>
+          <p class="cert-org">Manila Central University</p>
+          <span class="cert-year">March 21, 2025</span>
+        </li>
+
+        <!-- Non-Acads -->
+        <li class="cert-card card-dark reveal" data-cat="non-acad">
+          <span class="cert-icon"><i class="bi bi-patch-check"></i></span>
+          <span class="cert-cat">Non-Academics</span>
+          <h3>Leadership Awardee</h3>
+          <p class="cert-org">Manila Central University</p>
+          <span class="cert-year">May 16, 2025</span>
+        </li>
+
+         <li class="cert-card card-dark reveal" data-cat="non-acad">
+          <span class="cert-icon"><i class="bi bi-patch-check"></i></span>
+          <span class="cert-cat">Non-Academics</span>
+          <h3>Financial Literacy Seminar</h3>
+          <p class="cert-org">Manila Central University</p>
+          <span class="cert-year">October 22, 2024</span>
+        </li>
+        
+        <li class="cert-card card-dark reveal" data-cat="non-acad">
+          <span class="cert-icon"><i class="bi bi-patch-check"></i></span>
+          <span class="cert-cat">Non-Academics</span>
+          <h3>Basic Life Support Seminar</h3>
+          <p class="cert-org">Manila Central University</p>
+          <span class="cert-year">September 28, 2024</span>
+        </li>
+
+        
+
+      </ul>
+    </div>
+  </section>
+
+
+
+
+  <!-- Skills Section -->
+  <section class="section" id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-index">04</span>
+        <h2>Skills</h2>
+        <p class="section-note">Where creativity meets code.</p>
+      </div>
+
+ 
+    
+      <div class="skills-grid layout-bento" data-stagger>
+        <!-- Creative -->
+        <article class="skill-card card-dark reveal">
+          <h3><i class="bi bi-palette"></i> Creative</h3>
+          <ul class="skill-items">
+            <li class="skill-item"><i class="bi bi-camera-reels"></i><div><strong>Videography</strong><span>Framing and shooting visuals that tell a story.</span></div></li>
+          
+            <li class="skill-item"><i class="bi bi-image"></i><div><strong>Photo Editing</strong><span>Colour and retouching, mostly in Lightroom.</span></div></li>
+
+            <li class="skill-item"><i class="bi bi-vector-pen"></i><div><strong>Multimedia Design</strong><span>Infographics, layouts and graphics that are easy to read.</span></div></li>
+      
+             <li class="skill-item"><i class="bi bi-scissors"></i><div><strong>Video Editing</strong><span>Cutting footage into clear, polished pieces.</span></div></li>
+
+             
+
+
+          </ul>
+          <ul class="tags">
+            <li class="tag">Da Vinci Resolve</li>
+            <li class="tag">Adobe Lightroom</li>
+            <li class="tag">Figma</li>
+            <li class="tag">Canva</li>
+          </ul>
+        </article>
+
+        <!-- Digital -->
+        <article class="skill-card card-dark reveal">
+          <h3><i class="bi bi-code-slash"></i> Digital</h3>
+          <ul class="skill-items">
+            <li class="skill-item"><i class="bi bi-globe2"></i><div><strong>Web Development</strong><span>Responsive sites built with HTML, CSS and JavaScript.</span></div></li>
+            <li class="skill-item"><i class="bi bi-terminal"></i><div><strong>Programming</strong><span>C, C++ and C# for projects and coursework.</span></div></li>
+            <li class="skill-item"><i class="bi bi-cpu"></i><div><strong>Arduino &amp; Electronics</strong><span>Circuits, sensors and working prototypes.</span></div></li>
+            <li class="skill-item"><i class="bi bi-rulers"></i><div><strong>CAD Design</strong><span>3D designs and technical plates in CATIA V5.</span></div></li>
+          </ul>
+          <ul class="tags">
+            <li class="tag">HTML</li>
+            <li class="tag">CSS</li>
+            <li class="tag">JavaScript</li>
+            <li class="tag">Python</li>
+            <li class="tag">VS Code</li>
+            <li class="tag">Catia v5 3D CAD</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Travels Section -->
+  <section class="section" id="travels">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-index">05</span>
+        <h2>Travels</h2>
+        <p class="section-note">Places I've been, one flight at a time.</p>
+      </div>
+
+      <!-- Flight path (the plane moves as you scroll) -->
+      <div class="route reveal" aria-hidden="true">
+        <span class="route-dot"></span>
+        <span class="route-line"></span>
+        <span class="route-dot"></span>
+        <i class="bi bi-airplane-fill route-plane"></i>
+      </div>
+
+      <!-- LUMPIA WRAPPER -->
+      <!-- LUMPIA WRAPPER -->
+      <!-- LUMPIA WRAPPER -->
+  
+      <div class="wrapper lumpia reveal">
+        <div class="containerrs">
+
+          <input type="radio" name="slide" id="c2">
+          <label for="c2" class="card">
+            <span class="vlabel">Bohol</span>
+            <div class="row">
+              <div class="icon">1</div>
+              <div class="description">
+                <span class="trip-meta"><i class="bi bi-geo-alt-fill"></i> Bohol &middot; Philippines &middot; 2019</span>
+                <h4>Tagbilaran, Bohol</h4>
+                <p>Description</p>
+              </div>
+            </div>
+          </label>
+
+
+          <input type="radio" name="slide" id="c1" checked>
+          <label for="c1" class="card">
+            <span class="vlabel">Boracay</span>
+            <div class="row">
+              <div class="icon">2</div>
+              <div class="description">
+                <span class="trip-meta"><i class="bi bi-geo-alt-fill"></i> Aklan &middot; Philippines &middot; 2021</span>
+                <h4>Caticlan, Boracay</h4>
+                <p>Description</p>
+              </div>
+            </div>
+          </label>
+
+
+          <input type="radio" name="slide" id="c3">
+          <label for="c3" class="card">
+            <span class="vlabel">El Nido</span>
+            <div class="row">
+              <div class="icon">3</div>
+              <div class="description">
+                <span class="trip-meta"><i class="bi bi-geo-alt-fill"></i> Palawan &middot; Philippines &middot; 2024</span>
+                <h4>El Nido, Palawan</h4>
+                <p>Description.</p>
+              </div>
+            </div>
+          </label>
+
+          <input type="radio" name="slide" id="c4">
+          <label for="c4" class="card">
+            <span class="vlabel">Hong Kong</span>
+            <div class="row">
+              <div class="icon">4</div>
+              <div class="description">
+                <span class="trip-meta"><i class="bi bi-geo-alt-fill"></i> Hong Kong &middot; 2025</span>
+                <h4>Hong Kong</h4>
+                <p>Description</p>
+              </div>
+            </div>
+          </label>
+
+
+          <input type="radio" name="slide" id="c5">
+          <label for="c5" class="card">
+            <span class="vlabel">Macau</span>
+            <div class="row">
+              <div class="icon">5</div>
+              <div class="description">
+                <span class="trip-meta"><i class="bi bi-geo-alt-fill"></i> Macau &middot; 2025</span>
+                <h4>Macau</h4>
+                <p>Description</p>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <!-- Counter and arrows -->
+        <div class="lumpia-bar">
+          <span class="lumpia-count" aria-live="polite"><b>01</b> / 05</span>
+          <span class="lumpia-hint"></span>
+          <div class="lumpia-btns">
+            <button type="button" class="lumpia-btn" data-dir="-1" aria-label="Previous place"><i class="bi bi-arrow-left"></i></button>
+            <button type="button" class="lumpia-btn" data-dir="1" aria-label="Next place"><i class="bi bi-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect Section -->
+  <section class="section cta-section">
+    <div class="wrap">
+      <div class="cta card-dark reveal">
+        <h2>Baby, let's talk?</h2>
+        <p>DI KO ALAM ANO LALAGAY KOOOO</p>
+        <a href="contact.html" class="btn-pill solid">Connect with Me <i class="bi bi-arrow-up-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>&copy; 2026 Denielle Ubana</span>
+      <a href="#intro">Back to top <i class="bi bi-arrow-up"></i></a>
+    </div>
+  </footer>
+
+</body>
+</html>
